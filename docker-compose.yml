@@ -5,6 +5,8 @@ services:
     restart: always
     volumes:
     ## here db_data is the host volume which must be same as in the volumes at the end of the file
+    ## when the postgres container is restarted all the data is lost so for data persistency we mount the volumes
+    ## docker exec -it [postgres container id] sh will take us inside the container terminal and theh inside /var/lib/postgresql/data is the data
     - ./db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
