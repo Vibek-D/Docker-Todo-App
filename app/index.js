@@ -1,24 +1,54 @@
-const express = require('express');
-const app = express();
-require('dotenv').config();
-const cors = require('cors');
+import { ApolloServer, gql } from "apollo-server-express";
+import express from "express";
+import http from "http";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 
-const port = 3000;
+async function startApolloServer() {
+  const app = express();
+  const httpServer = http.createServer(app);
 
-app.set('view engine', 'ejs');
-app.use(cors());
-app.use(function (request, response, next) {
-  response.header("Access-Control-Allow-Origin", "*");
-  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+  const typeDefs = gql`
+    type Book {
+      title: String
+      author: String
+    }
 
-app.get('/', (req, res) => {
-  res.send('Server Pinged');
-});
+    type Query {
+      books: [Book]
+    }
+  `;
 
-app.listen(port, () => {
-  console.log(`App listening at port 3000`);
-});
+  const books = [
+    {
+      title: "The Awakening",
+      author: "Kate Chopin",
+    },
+    {
+      title: "City of Glass",
+      author: "Paul Auster",
+    },
+  ];
+
+  const resolvers = {
+    Query: {
+      books: () => books,
+    },
+  };
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+
+  await server.start();
+  server.applyMiddleware({
+    app,
+    path: "/",
+  });
+
+  await new Promise((resolve) => httpServer.listen({ port: 3000 }, resolve));
+  console.log(`🚀 Server ready at http://localhost:3000/graphql`);
+}
+
+startApolloServer();

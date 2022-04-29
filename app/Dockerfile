@@ -9,4 +9,4 @@ RUN npm install
 COPY . ./
 EXPOSE 3000
 ## when the container is run
-CMD ["node", "index.js"]
+CMD ["npm", "run", "start"]
