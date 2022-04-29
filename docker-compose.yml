@@ -4,6 +4,7 @@ services:
     image: postgres:12
     restart: always
     volumes:
+    ## here db_data is the host volume which must be same as in the volumes at the end of the file
     - ./db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
@@ -28,6 +29,7 @@ services:
       ## uncomment next line to set an admin secret
       ## HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
   web:
+    ## if the image is hosted on aws ecr then add the ecr repo url or if the image is in docker hub then also add the image link with image: [url]
     build: ./app
     command: npm run dev
     volumes:
@@ -39,4 +41,3 @@ services:
       - postgres
 volumes:
   db_data:
-
