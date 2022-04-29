@@ -4,6 +4,7 @@ services:
     image: postgres:12
     restart: always
     volumes:
+    ## here db_data is the host volume which must be same as in the volumes at the end of the file
     - ./db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgrespassword
@@ -40,4 +41,3 @@ services:
       - postgres
 volumes:
   db_data:
-
