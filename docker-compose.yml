@@ -28,6 +28,7 @@ services:
       ## uncomment next line to set an admin secret
       ## HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
   web:
+    ## if the image is hosted on aws ecr then add the ecr repo url or if the image is in docker hub then also add the image link with image: [url]
     build: ./app
     command: npm run dev
     volumes:
