@@ -7,6 +7,7 @@ COPY package.json .
 RUN npm install
 ## index file and all other files moved
 COPY . ./
-EXPOSE 3000
+ENV PORT 3000
+EXPOSE $PORT
 ## when the container is run
 CMD ["npm", "run", "start"]

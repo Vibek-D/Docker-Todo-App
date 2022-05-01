@@ -33,12 +33,19 @@ services:
   web:
     ## if the image is hosted on aws ecr then add the ecr repo url or if the image is in docker hub then also add the image link with image: [url]
     build: ./app
-    command: npm run dev
+    ## this command below will overwrite the "CMD" parameter we set inside the Dockerfile, even if we set an environment parameter in this docker-compose file, that would also
+    ## overwrite the "ENV" parameter in the Dockerfile
+    command: npm run start
     volumes:
-      - ./app:/app
+      ## "ro" in the volume binding with allowing the container read-only perms, ie the new files/dirs created in the local env will write into docker ie local env has write perms
+      ## docker but docker only has read-only perms to local env, ie if we "run docker exec -it [contId] sh" into the container and "touch newFile" in the container then that new
+      ## file wont be craeted in the local env but the reverse will happen as local env has write perms into docker
+      - ./app:/app:ro
       - ./app/node_modules:/app/node_modules
+    ## the node app will be opening on two ports
     ports:
       - "3000:3000"
+      - "3001:3001"
     depends_on:
       - postgres
 volumes:
